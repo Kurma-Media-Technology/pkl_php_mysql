@@ -34,12 +34,25 @@
             }
 
             form{
-                text-align: center;
+                /* text-align: center; */
                 margin-bottom: 20px;
             }
 
             form input{
                 margin: 5px 0;
+                padding: 10px;
+                border: 1px solid #eaeaea;
+            }
+
+            form select{
+                margin: 5px 0;
+                padding: 10px;
+                border: 1px solid #eaeaea;
+            }
+
+            form #form-close{
+                display: flex;
+                justify-content: end;
             }
 
             form button{
@@ -48,6 +61,17 @@
                 background-color: blue;
                 color: white;
                 border: none;
+                width: 100%;
+            }
+
+            #form-add{
+                position: fixed;
+                background-color: #fff;
+                left: 50%;
+                transform:translate(-50%, -50%);
+                padding: 20px;
+                border-radius: 10px;
+                margin-top: 30px;
             }
 
             /* HTML: <div class="loader"></div> */
@@ -78,7 +102,9 @@
         <div class="wrap-card">
             <h3 class="card-title">Sistem Manajemen Santri <button type="button" id="open-add">Tambah</button></h3>
             <form id="form-add" style="display: none;">
-                <a href="#" id="form-close"><u>Close</u></a> <br>
+                <a href="#" id="form-close"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 30 30">
+                    <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"></path>
+                </svg></a> <br>
                 <input type="text" name="fullname" placeholder="Nama lengkap"> <br>
                 <input type="text" name="phone" placeholder="No HP"> <br>
                 <input type="text" name="address" placeholder="Alamat"> <br>
@@ -96,11 +122,13 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <!-- My scrip -->
          <script>
+
             var base_url = 'http://localhost/pkl-2024/belajar-php/markicob/database-mysql'
             
             get_santri()
 
             function get_santri(){
+                $('#list-santri').html('')
                 $.ajax({
                     url: `${base_url}/api/santri.php`,
                     type: 'GET',
@@ -121,7 +149,10 @@
                                     return 'Akhwat'
                                 }
                             }
+                            
                             var card_item = `<div class="card-item">
+                                                <button data-santri_id="${item.santri_id}" type="button" class="delete-santri">hapus</button>
+                                                <button data-santri_id="${item.santri_id}" type="button" class="edit-santri">edit</button>
                                                 <h5>${item.fullname}</h5>
                                                 <ul>
                                                     <li>${item.phone}</li>
@@ -133,6 +164,114 @@
                             $('#list-santri').append(card_item)
                             
                         })
+
+                        // ketika santri dihapus
+                        $('.delete-santri').click(function(){
+                            Swal.fire({
+                                title: "Yakin ingin menghapus data ini?",
+                                text: "Kamu akan kehilangan data ini!!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Iya"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var get_santri_id = $(this).data('santri_id')
+                                    $.ajax({
+                                        url: `${base_url}/api/santri.php?santri_id=${get_santri_id}`,
+                                        type: 'DELETE',
+                                        dataType: 'JSON', 
+                                        success: function(response){
+                                            if (response.status == true){
+                                                Swal.fire({
+                                                    title: "Deleted!",
+                                                    text: "Data berhasil dihapus",
+                                                    icon: "success"
+                                                });
+                                                get_santri()
+                                            }
+                                        },
+                                        error: function(error){
+                                            Swal.fire({
+                                            icon: "error",
+                                            title: "Maaf server error :(",
+                                            text: error.responseJSON.message,
+                                            });
+                                        }
+                                    }) 
+                                }
+                            });
+                        })
+
+                        // ketika edit santri
+                        $('.edit-santri').click(function(){
+                            $('#form-add').show()
+                            $('#btn-add-santri').remove()
+                            $('#btn-update-santri').remove()
+                            var btn_update = `<button type="button" id="btn-update-santri">Update</button>`
+                            $('#form-add').append(btn_update)
+
+                            // ambil data yang akan di edit
+                            var get_santri_id = $(this).data('santri_id')
+                            $.ajax({
+                                url:`${base_url}/api/santri.php?santri_id=${get_santri_id}`,
+                                type: 'GET',
+                                dataType: 'JSON',
+                                success: function(response){
+                                    var data = response.data
+                                    $('input[name="fullname"]').val(data.fullname)
+                                    $('input[name="phone"]').val(data.phone)
+                                    $('input[name="address"]').val(data.address)
+                                    $('select[name="gender"]').val(data.gender)
+                                }
+                            })
+
+                            // ketika update
+                            $('#btn-update-santri').click(function(){
+                                var get_fullname = $('input[name="fullname"]').val()
+                                var get_phone = $('input[name="phone"]').val()
+                                var get_address = $('input[name="address"]').val()
+                                var get_gender = $('select[name="gender"]').val()
+                                
+                                var update = {
+                                    "santri_id": get_santri_id,
+                                    "fullname": get_fullname,
+                                    "phone": get_phone,
+                                    "address": get_address,
+                                    "gender": get_gender,
+                                }
+
+                                $.ajax({
+                                    url: `${base_url}/api/santri.php`,
+                                    type: 'PUT',
+                                    data: JSON.stringify(update),
+                                    contentType: "application/json",
+                                    dataType: 'JSON',
+                                    success: function(response){
+                                        if (response.status == true){
+                                            Swal.fire({
+                                                title: response.message,
+                                                text: "Data berhasil diubah",
+                                                icon: "success"
+                                            });
+                                            get_santri()
+                                            $('#form-add').hide()
+                                        }
+                                    },
+                                    error: function (error){
+                                        Swal.fire({
+                                        icon: "error",
+                                        title: "Maaf server error :(",
+                                        text: error.responseJSON.message,
+                                        });
+                                    }
+                                })
+
+                            })
+                        })
+
+
                     }
                 })
             }
@@ -164,8 +303,10 @@
                         dataType: 'JSON', 
                         success: function(response){
                             if (response.status == true){
-                                $('#list-santri').html('')
                                 get_santri()
+                                $('input[name="fullname"]').val('')
+                                $('input[name="phone"]').val('')
+                                $('input[name="address"]').val('')
                                 $('#form-add').hide()
                                 Swal.fire({
                                     position: "center",

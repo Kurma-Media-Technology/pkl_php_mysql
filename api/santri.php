@@ -1,6 +1,6 @@
 <?php 
 // Turn off all error reporting
-error_reporting(0);
+// error_reporting(0);
 
 require_once "helper.php";
 require_once "../functions.php";

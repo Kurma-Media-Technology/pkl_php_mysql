@@ -92,7 +92,7 @@ function get_edit_santri()
 /**
  * Fungsi untuk mengubah data santri
  */
-function update_santri($san)
+function update_santri()
 {
     $santri_id = $_POST['santri_id'];
     $fullname = $_POST['fullname'];
