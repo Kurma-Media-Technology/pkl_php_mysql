@@ -1,4 +1,6 @@
 <?php 
+// Turn off all error reporting
+error_reporting(0);
 
 require_once "helper.php";
 require_once "../functions.php";
@@ -51,7 +53,7 @@ switch ($request_method)
     case 'POST':
 
         // validasi tambah
-        if ($_POST['fullname'] == '' OR $_POST['phone'] == '' OR $_POST['address'] == '' OR $_POST['gender'] == '') 
+        if ($_POST['fullname'] == '' OR $_POST['phone'] == '' OR $_POST['address'] == '' OR  $_POST['gender'] == '')
         {
             $respon =  array(
                 'status' => false,
@@ -59,7 +61,7 @@ switch ($request_method)
                 'data' => array()
             );
 
-            echo response($respon, 500);
+            echo response($respon, 400);
             
         }
         else
@@ -85,7 +87,7 @@ switch ($request_method)
                     'data' => array()
                 );
 
-                echo response($respon, 500);
+                echo response($respon, 400);
             }
         }
 
