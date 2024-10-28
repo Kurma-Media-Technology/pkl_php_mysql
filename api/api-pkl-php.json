@@ -1,0 +1,175 @@
+{
+	"info": {
+		"_postman_id": "168b6c32-2d55-45d2-8e75-08b5921d9f56",
+		"name": "PKL-PHP-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10383316"
+	},
+	"item": [
+		{
+			"name": "Get santri",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/santri.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"santri.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tambah Santri",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "fullname",
+							"value": "habib",
+							"type": "text"
+						},
+						{
+							"key": "phone",
+							"value": "1234",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "bekasi",
+							"type": "text"
+						},
+						{
+							"key": "gender",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/santri.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"santri.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get santri Detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/santri.php?santri_id=1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"santri.php"
+					],
+					"query": [
+						{
+							"key": "santri_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update santri",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"santri_id\": 5,\n    \"fullname\": \"abdul\",\n    \"phone\":\"123\",\n    \"address\": \"depok\",\n    \"gender\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/santri.php",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"santri.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hapus Santri",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/santri.php?santri_id=7",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"santri.php"
+					],
+					"query": [
+						{
+							"key": "santri_id",
+							"value": "7"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost/pkl-2024/belajar-php/markicob/database-mysql",
+			"type": "string"
+		}
+	]
+}

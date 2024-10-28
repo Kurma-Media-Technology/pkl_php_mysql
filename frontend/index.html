@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Belajar Consume API</title>
+        <style>
+            body{
+                font-family:'sans-serif';
+                margin:0;
+                padding:0;
+                box-sizing: border-box;
+            }
+
+            .wrap-card{
+                width: 600px;
+                margin: auto;
+                background-color: #eaeaea;
+                padding: 2rem;
+            }
+
+            .card-title{
+                text-align:center;
+            }
+
+            .card-grid{
+                display: flex;
+                gap:20px;
+                flex-wrap: wrap;
+            }
+
+            .card-item{
+                width: 150px;
+                background-color: rgb(221, 223, 233);
+                padding: 0.5em;
+            }
+
+            form{
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            form input{
+                margin: 5px 0;
+            }
+
+            form button{
+                margin-top: 10px;
+                padding: 5px 10px;
+                background-color: blue;
+                color: white;
+                border: none;
+            }
+
+            /* HTML: <div class="loader"></div> */
+            .loader {
+                width: 50px;
+                aspect-ratio: 1;
+                color: #854f1d;
+                border-radius: 50%;
+                display: grid;
+                background: 
+                    conic-gradient(from 90deg at 4px 4px,#0000 90deg,currentColor 0)
+                    -4px -4px/calc(50% + 2px) calc(50% + 2px),
+                    radial-gradient(farthest-side,currentColor 6px,#0000 7px calc(100% - 6px),currentColor calc(100% - 5px)) no-repeat;
+                animation: l10 2s infinite linear;
+                position: relative;
+            }
+            .loader:before {
+                content: "";
+                border-radius: inherit;
+                background: inherit;
+                transform: rotate(45deg);
+            }
+            @keyframes l10 {to{transform: rotate(.5turn)}}
+        </style>
+        
+    </head>
+    <body>
+        <div class="wrap-card">
+            <h3 class="card-title">Sistem Manajemen Santri <button type="button" id="open-add">Tambah</button></h3>
+            <form id="form-add" style="display: none;">
+                <a href="#" id="form-close"><u>Close</u></a> <br>
+                <input type="text" name="fullname" placeholder="Nama lengkap"> <br>
+                <input type="text" name="phone" placeholder="No HP"> <br>
+                <input type="text" name="address" placeholder="Alamat"> <br>
+                <select name="gender">
+                    <option value="1">Ikhwan</option>
+                    <option value="0">Akhwat</option>
+                </select>
+                <br>
+                <button type="button" id="btn-add-santri">Submit</button>
+            </form>
+            <div class="card-grid" id="list-santri"></div>
+        </div>
+        <script src="./js/jquery-3.7.1.min.js"></script>
+        <!-- sweet alert  -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- My scrip -->
+         <script>
+            var base_url = 'http://localhost/pkl-2024/belajar-php/markicob/database-mysql'
+            
+            get_santri()
+
+            function get_santri(){
+                $.ajax({
+                    url: `${base_url}/api/santri.php`,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    success: function(response)
+                    {
+                        var get_data = response.data
+
+                        $.each(get_data, function(index, item)
+                        {
+                            var get_gender = function(gender){
+                                if(gender == 1)
+                                {
+                                    return 'Ikhwan'
+                                }
+                                else
+                                {
+                                    return 'Akhwat'
+                                }
+                            }
+                            var card_item = `<div class="card-item">
+                                                <h5>${item.fullname}</h5>
+                                                <ul>
+                                                    <li>${item.phone}</li>
+                                                    <li>${item.address}</li>
+                                                    <li>${get_gender(item.gender)}</li>
+                                                </ul>
+                                            </div>`
+                            
+                            $('#list-santri').append(card_item)
+                            
+                        })
+                    }
+                })
+            }
+
+            $(document).ready(function(){
+                $('#open-add').on('click', function(){
+                    $('#form-add').show()
+                })
+
+                $('#form-close').click(function(){
+                    $('#form-add').hide()
+                })
+
+                $('#btn-add-santri').click(function(){
+                    var get_fullname = $('input[name="fullname"]').val()
+                    var get_phone = $('input[name="phone"]').val()
+                    var get_address = $('input[name="address"]').val()
+                    var get_gender = $('select[name="gender"]').val()
+
+                    $.ajax({
+                        url: `${base_url}/api/santri.php`,
+                        type: 'POST',
+                        data: {
+                            fullname: get_fullname,
+                            phone: get_phone,
+                            address: get_address,
+                            gender: get_gender
+                        },
+                        dataType: 'JSON', 
+                        success: function(response){
+                            if (response.status == true){
+                                $('#list-santri').html('')
+                                get_santri()
+                                $('#form-add').hide()
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        },
+                        error: function(error){
+                            Swal.fire({
+                            icon: "error",
+                            title: "Maaf server error :(",
+                            text: error.responseJSON.message,
+                            });
+                        }
+                    })
+                })
+            })
+         </script>
+    </body>
+</html>
