@@ -26,14 +26,12 @@ function api_get()
 {
     autorized();
 
-    if (isset($_GET['santri_id']) && !empty($_GET['santri_id']))
-    {
+    if (isset($_GET['santri_id']) && !empty($_GET['santri_id'])) {
         $get_santri_id = $_GET['santri_id'];
 
         $get_edit_santri = get_edit_santri();
 
-        if ($get_edit_santri == NULL)
-        {
+        if ($get_edit_santri == NULL) {
             $respon = array(
                 'status' => false,
                 'message' => 'Data tidak ditemukan',
@@ -42,18 +40,14 @@ function api_get()
 
             echo response($respon, 404);
             die;
-        }
-        else
-        {
+        } else {
             $respon = array(
                 'status' => true,
                 'message' => 'Sukses',
                 'data' => $get_edit_santri
             );
         }
-    }
-    else
-    {
+    } else {
         $respon = array(
             'status' => true,
             'message' => 'Sukses',
@@ -68,8 +62,7 @@ function api_post()
 {
     autorized();
     // validasi tambah
-    if ($_POST['fullname'] == '' OR $_POST['phone'] == '' OR $_POST['address'] == '' OR  $_POST['gender'] == '')
-    {
+    if ($_POST['fullname'] == '' or $_POST['phone'] == '' or $_POST['address'] == '' or  $_POST['gender'] == '') {
         $respon =  array(
             'status' => false,
             'message' => 'Fullname, phone, address dan gender tidak boleh kosong',
@@ -77,14 +70,10 @@ function api_post()
         );
 
         echo response($respon, 400);
-        
-    }
-    else
-    {
+    } else {
         $add_santri = add_santri();
 
-        if ($add_santri)
-        {
+        if ($add_santri) {
             $respon =  array(
                 'status' => true,
                 'message' => 'Berhasil nambah',
@@ -92,9 +81,7 @@ function api_post()
             );
 
             echo response($respon, 200);
-        }
-        else
-        {
+        } else {
 
             $respon =  array(
                 'status' => false,
@@ -112,9 +99,8 @@ function api_delete()
     autorized();
     // validasi hapus
     $cek_santri = get_edit_santri();
-    
-    if ($cek_santri == FALSE)
-    {
+
+    if ($cek_santri == FALSE) {
         $respon =  array(
             'status' => false,
             'message' => 'Santri tidak ditemukan',
@@ -122,29 +108,24 @@ function api_delete()
         );
 
         echo response($respon, 404);
-    }
-    else
-    {
+    } else {
         $delete_santri = delete_santri();
 
-        if ($delete_santri)
-        {
+        if ($delete_santri) {
             $respon =  array(
                 'status' => true,
                 'message' => 'Behasil menghapus',
                 'data' => array()
             );
-    
+
             echo response($respon, 200);
-        }
-        else
-        {
+        } else {
             $respon =  array(
                 'status' => false,
                 'message' => 'Gagal menghapus',
                 'data' => array()
             );
-    
+
             echo response($respon, 500);
         }
     }
@@ -163,8 +144,7 @@ function api_put()
     $_POST['gender'] = $get_json['gender'];
 
     // validasi edit
-    if ($_POST['santri_id'] == ''  OR $_POST['fullname'] == '' OR $_POST['phone'] == '' OR $_POST['address'] == '' OR $_POST['gender'] == '') 
-    {
+    if ($_POST['santri_id'] == ''  or $_POST['fullname'] == '' or $_POST['phone'] == '' or $_POST['address'] == '' or $_POST['gender'] == '') {
         $respon =  array(
             'status' => false,
             'message' => 'Santri ID, Fullname, phone, address dan gender tidak boleh kosong',
@@ -172,14 +152,10 @@ function api_put()
         );
 
         echo response($respon, 500);
-        
-    }
-    else
-    {
+    } else {
         $update_santri = update_santri();
 
-        if ($update_santri)
-        {
+        if ($update_santri) {
             $respon =  array(
                 'status' => true,
                 'message' => 'Berhasil diubah',
@@ -187,9 +163,7 @@ function api_put()
             );
 
             echo response($respon, 200);
-        }
-        else
-        {
+        } else {
 
             $respon =  array(
                 'status' => false,
@@ -206,11 +180,10 @@ function autorized()
 {
     // ambil x-api-key dari header
     $get_x_api_key = $_SERVER['HTTP_X_API_KEY'];
-    $query_check_token = "SELECT * FROM user WHERE token='$get_x_api_key'";
+    $query_check_token = "SELECT user_id FROM user WHERE token='$get_x_api_key'";
     $check_token = connect_db()->query($query_check_token);
 
-    if ( $check_token->num_rows == 0 )
-    {
+    if ($check_token->num_rows == 0) {
         $respon = array(
             'status' => false,
             'message' => 'Unautorized',
@@ -219,5 +192,8 @@ function autorized()
 
         echo response($respon, 401);
         die;
+    } else {
+        $user = $check_token->fetch_assoc();
+        return $user['user_id'];
     }
 }

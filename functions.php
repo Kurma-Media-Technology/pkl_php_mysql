@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once "config.php";
 
 /**
@@ -20,8 +20,7 @@ function get_list_santri()
     $eksekusi = $db->query($sql_ambil_data_santri);
     $result = array();
 
-    while ($row = $eksekusi->fetch_assoc())
-    {
+    while ($row = $eksekusi->fetch_assoc()) {
         $result[] = $row;
     }
 
@@ -33,12 +32,9 @@ function get_list_santri()
  */
 function get_gender($data)
 {
-    if ($data == 1)
-    {
+    if ($data == 1) {
         $result = 'Ikhwan';
-    }
-    else
-    {
+    } else {
         $result = 'Akhwat';
     }
 
@@ -64,18 +60,20 @@ function add_santri()
     $phone = $_POST['phone'];
     $address = $_POST['address'];
     $gender = $_POST['gender'];
+    $user_id = autorized();
 
-    $sql_tambah = "INSERT INTO santri (fullname, phone, address, gender) VALUES ('$fullname', '$phone', '$address', '$gender')";
+    $sql_tambah = "INSERT INTO santri (fullname, phone, address, gender, user_id) VALUES ('$fullname', '$phone', '$address', '$gender', '$user_id')";
     $eksekusi = connect_db()->query($sql_tambah);
     return $eksekusi;
 }
+
 
 /**
  * Fungsi untuk pindah url
  */
 function redirect($file)
 {
-    header('Location: '.$file.'');
+    header('Location: ' . $file . '');
 }
 
 /**
@@ -121,8 +119,8 @@ function delete_santri()
  */
 function get_list_hafalan_santri()
 {
-    $sql_ambil_data_santri = 
-    "SELECT santri.fullname AS nama_santri, santri_hafalan.* 
+    $sql_ambil_data_santri =
+        "SELECT santri.fullname AS nama_santri, santri_hafalan.* 
     FROM santri_hafalan 
     LEFT OUTER JOIN santri ON santri_hafalan.santri_id=santri.santri_id
     WHERE santri_hafalan.tanggal BETWEEN '2024-10-20 00:00:00' AND '2024-10-20 23:59:59'";
@@ -130,8 +128,7 @@ function get_list_hafalan_santri()
     $eksekusi = $db->query($sql_ambil_data_santri);
     $result = array();
 
-    while ($row = $eksekusi->fetch_assoc())
-    {
+    while ($row = $eksekusi->fetch_assoc()) {
         $result[] = $row;
     }
 
