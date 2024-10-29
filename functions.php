@@ -64,8 +64,9 @@ function add_santri()
     $phone = $_POST['phone'];
     $address = $_POST['address'];
     $gender = $_POST['gender'];
+    $user_id = autorized();
 
-    $sql_tambah = "INSERT INTO santri (fullname, phone, address, gender) VALUES ('$fullname', '$phone', '$address', '$gender')";
+    $sql_tambah = "INSERT INTO santri (fullname, phone, address, gender, user_id) VALUES ('$fullname', '$phone', '$address', '$gender', '$user_id')";
     $eksekusi = connect_db()->query($sql_tambah);
     return $eksekusi;
 }
@@ -76,7 +77,7 @@ function add_santri()
 function redirect($file)
 {
     header('Location: '.$file.'');
-}
+    }
 
 /**
  * Fungsi untuk mengambil data yang mau diedit

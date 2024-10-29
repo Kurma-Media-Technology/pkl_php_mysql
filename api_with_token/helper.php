@@ -72,12 +72,11 @@ function api_post()
     {
         $respon =  array(
             'status' => false,
-            'message' => 'Fullname, phone, address dan gender tidak boleh kosong',
+            'message' => 'fullname, phone, address dan gender tidak boleh kosong',
             'data' => array()
         );
 
         echo response($respon, 400);
-        
     }
     else
     {
@@ -204,20 +203,23 @@ function api_put()
 
 function autorized()
 {
-    // ambil x-api-key dari header
+    // Ambil x-api-key dari header
     $get_x_api_key = $_SERVER['HTTP_X_API_KEY'];
-    $query_check_token = "SELECT * FROM user WHERE token='$get_x_api_key'";
-    $check_token = connect_db()->query($query_check_token);
+    $query_check_token = "SELECT id FROM user WHERE token='$get_x_api_key'";
+    $result = connect_db()->query($query_check_token);
 
-    if ( $check_token->num_rows == 0 )
-    {
+    if ($result->num_rows == 0) {
         $respon = array(
             'status' => false,
-            'message' => 'Unautorized',
+            'message' => 'Unauthorized',
             'data' => array()
         );
 
         echo response($respon, 401);
         die;
+    } else {
+        // Jika token valid, ambil user_id dan return
+        $user = $result->fetch_assoc();
+        return $user['id'];
     }
 }
